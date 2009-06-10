@@ -1,0 +1,28 @@
+<table>
+<caption>Discount Codes & Affiliates</caption>
+<thead>
+  <tr>
+  <th>Update</th>
+  <th>Affiliate</th>
+  <th>Expiration Date</th>
+  <th>Code</th>  
+  <th>Comments</th>  
+  <th>Discount</th>  
+  <th>Commission</th>  
+
+  </tr>
+</thead>
+<tbdoy>
+	<% @discount_codes.each do |discount_code| %>
+  <tr>
+    <td><%= link_to "update", edit_admin_discount_code_url( discount_code ) %></td>
+    <td><%= discount_code.user.login %></td>
+    <td><%= discount_code.expires_on %></td>
+    <td><%= discount_code.code %></td>
+    <td><%= discount_code.comments %></td>  
+    <td><%= discount_code.discount_rate %></td>  
+    <td><%= discount_code.commission_rate %></td>  
+  </tr>
+	<% end %>
+</tbody>
+</table>

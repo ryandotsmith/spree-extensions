@@ -1,0 +1,15 @@
+<%= form.label :expires_on, "Expiration Date"%>
+<%= form.date_select :expires_on , :default => 1.year.from_now %>
+<br />
+
+<%= form.label :comments, "Comments"%>
+<%= form.text_field :comments  %>
+<br />
+
+<%= form.label :discount_rate, "Discount"%>
+<%= form.text_field :discount_rate  %>
+<br />
+
+<%= form.label :commission_rate, "Commission"%>
+<%= form.text_field :commission_rate  %>
+<br />
