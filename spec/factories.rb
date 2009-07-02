@@ -25,3 +25,26 @@ Factory.define :order do |order|
   order.association :user, :factory => :user
   order.association :discount_code, :factory => :discount_code
 end
+
+Factory.define :taxon do |taxon|
+  taxon.taxonomy_id { 1 }
+  taxon.name        { "discountable" }
+end
+
+Factory.define :product do |product|
+  product.name          { "widget" }
+  product.description   { "does anything or nothing" }
+  product.master_price  { 10000 }
+end
+
+Factory.define :line_item do |line_item|
+  line_item.association :order, :factory => :order
+  line_item.price       { 10.00 }
+end
+
+Factory.define :variant do |variant|
+  variant.association :product, :factory => :product
+end
+
+
+

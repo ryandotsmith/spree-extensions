@@ -1,0 +1,54 @@
+<div class='toolbar'>
+  <ul class='actions'>
+    <li>
+      <%= button_link_to t("new_user"), new_object_url, :icon => 'add' %></p>
+    </li>
+  </ul>
+  <br class='clear' />
+</div>
+
+
+<h1><%= t("listing_users") %></h1>
+
+
+<table class="index">
+  <thead>
+    <th><%= order_by_link :email, :text => t("user") %></th>
+    <th><%= t("action") %></th>
+  </thead>
+  <tbody>
+    <%- @collection.each do |user|%>
+    <tr>
+      <td width="350px">
+      <%=link_to user.email, object_url(user) %>
+      &nbsp;
+      <%= "affiliate" if user.is_affiliate? %>
+      </td>
+      <td>
+      	<%= link_to_edit user %> 
+      	<%= link_to_delete user %>
+      </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= page_links(:prev => "&#171; #{t('previous')}", :next => "#{t('next')} &#187;") if @search.page_count > 1 %>
+
+
+<% content_for :sidebar do %>
+
+  <% form_for [:admin, @search] do |f| %>
+    <div class="box">
+      <h3><%= t(:search) %></h3>
+    <% f.fields_for @search.conditions do |user| %>
+      <p>
+        <%= t("email") %><br />
+        <%= user.text_field :lower_of_email, :size=>18 %>
+      </p>
+      <p><%= button t("search") %></p>
+  	<% end %>
+  	</div>
+  <% end %>
+
+<% end %>

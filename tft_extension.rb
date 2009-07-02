@@ -12,17 +12,13 @@ class TftExtension < Spree::Extension
   def activate
 
     Admin::UsersController.class_eval do
-    before_filter :add_discount_code_fields
-    after_filter :bulid_discount_code, :only => [:new,:edit]
-
-      def add_discount_code_fields
-        @extension_partials << 'discount_codes'
+      # when editing a user, we need to build a dc object in case the user wants to
+      # add a new discount code to the user. We are not using fields for on the user 
+      # because we have the discount code in a seperate field and when you update a user 
+      # and you do not supply a role, all roles get deleted. 
+      edit.before do
+        @discount_code = DiscountCode.new
       end
-
-      def bulid_discount_code
-        @user.discount_codes.build
-      end
-
     end
 
     Admin::ConfigurationsController.class_eval do
@@ -43,17 +39,14 @@ class TftExtension < Spree::Extension
       attr_accessible :discount_codes_attributes
       include Affiliate
     end
-    
+    #######################
+    # The Order gets by with a little help from friends
     Order.class_eval do
       belongs_to :discount_code      
-#      def initialize
-#         require "rubygems"; require "ruby-debug"; debugger 
-#         super
-#      end
 
-     # def total
-     #   self.total = self.item_total + self.ship_amount + self.tax_amount - self.calculate_discount
-     # end
+     def total
+       self.total = self.item_total + self.ship_amount + self.tax_amount - self.calculate_discount
+     end
 
       def update_totals
         # finalize order totals 
@@ -64,15 +57,30 @@ class TftExtension < Spree::Extension
           self.ship_amount = 0
         end
         self.tax_amount       = calculate_tax
-        #self.discount_total   = calculate_discount
-        #self.commission_total = calculate_commission
+        self.discount_total   = calculate_discount
+        self.commission_total = calculate_commission
+      end
+      # this method is used in the view to display
+      # the total of all items after discount ( if any )
+      def discounted_item_total
+        ( self.item_total - self.discountable_item_total )
+      end
+      # using this method to calculate which items that we can discount. 
+      def discountable_item_total
+        tot = 0
+        self.line_items.each do |li|
+          tot += li.total if li.product.taxons.any? {|t| t.name == "Discountable"}
+        end
+        self.item_total = tot
       end
 
       def calculate_discount
-        self.item_total * self.discount_code.discount_rate 
+        return 0.0 if self.discount_code.nil?
+        self.discountable_item_total * self.discount_code.discount_rate
       end
 
       def calculate_commission
+        return 0.0 if self.discount_code.nil?
         self.item_total * self.discount_code.commission_rate
       end
       

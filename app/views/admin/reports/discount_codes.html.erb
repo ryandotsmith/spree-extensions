@@ -1,0 +1,33 @@
+<h1><%= t("discount_codes") %> </h1>
+
+<table class="admin-report">
+	<thead>
+		<th>Orders</th>
+		<th>Code</th>
+		<th>Affiliate</th>
+		<th>Discount Rate</th>
+		<th>Commission Rate</th>
+		<th>Discount Total</th>
+		<th>Commission Total</th>
+	</thead>
+
+	<% @discount_codes.each do |discount_code|%>
+  <tbody>
+		<tr>
+			<td><%= link_to "orders", discount_code_orders_admin_reports_path( :discount_code => discount_code.id ) %></td>
+			<td><%= discount_code.code %></td>
+			<td><%= discount_code.user.login %></td>
+			<td><%= discount_code.discount_rate %></td>
+			<td><%= discount_code.commission_rate %></td>	
+			<td><%= number_to_currency discount_code.orders.sum(:discount_total) %></td>
+			<td><%= number_to_currency discount_code.orders.sum(:commission_total) %></td>
+
+		</tr>		
+  </tbody>
+	<% end %>
+</table>
+
+<% content_for :sidebar do %>
+  <%= render :partial => 'admin/shared/report_criteria', :locals => {} %>
+<% end %>
+

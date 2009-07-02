@@ -1,8 +1,9 @@
 class DiscountCode < ActiveRecord::Base
   belongs_to :user
+  has_many :orders
 
   def before_save
-    self.code = generate_code()
+    self.code ||= generate_code()
   end
   
   def generate_code(code_length=6)

@@ -1,0 +1,29 @@
+
+
+<h1><%= t("orders") + " for discount code: #{ @discount_code.code }"%> </h1>
+<h2><%= link_to "back to discount codes", discount_codes_admin_reports_path%></h2>
+<table class="admin-report">
+	<thead>
+		<th>Order Date</th>
+		<th>Order Number</th>
+		<th>Items Total (before discount)</th>
+		<th>Items Total (after discount)</th>
+		<th>Customer Name</th>
+		<th>Customer Email</th>
+	</thead>
+
+  <% @orders.each do |order| %>
+  <tbody>
+		<tr>
+      <td><%=order.created_at.to_date%></td>
+			<td><%= link_to order.number, admin_order_url(order) %></td>
+			<td><%= number_to_currency order.item_total %></td>
+			<td><%= number_to_currency (order.item_total - order.discount_total) %></td>
+
+      <td><%= order.bill_address.lastname +  ", " + order.bill_address.firstname %></td>
+      <td><%= order.user.email %></td>
+		</tr>		
+  </tbody>
+	<% end %>
+</table>
+

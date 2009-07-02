@@ -1,0 +1,47 @@
+<table class="order-summary">
+  <tr>
+    <th><%= t('item_description') %></th>
+    <th class="price"><%= t('price') %></th>
+    <th class="qty"><%= t('qty') %></th>
+    <th class="total_display"><span><%= t('total') %></span></th>
+  </tr>
+  <% @order.line_items.each do |item| %>
+  <tr >
+    <td width="300"><%=item.variant.product.name-%> <%= "(" + variant_options(item.variant) + ")" unless item.variant .option_values.empty? %></td>
+    <td valign="top"><%= number_to_currency item.price -%></td>
+    <td valign="top"><%=item.quantity-%></td>
+    <td valign="top" class="total_display"><span><%= number_to_currency (item.price * item.quantity)-%></span></td>
+  </tr>
+  <% end %>      
+  <tr id="subtotal-row">
+    <td colspan="3"><b><%= t('subtotal') %>:</b></td>
+    <td class="total_display"><span><%= number_to_currency @order.item_total -%></span></td>
+  </tr>
+	<% if @order.discount_code %>
+  <tr>
+    <td colspan="3"><b>Discounts:</b> </td>
+    <td class="total_display"><span id="discount_total"><%= number_to_currency @order.calculate_discount() -%></span></td>
+  </tr>
+  <tr>
+    <td colspan="3"><b>Discounted Subtotal:</b> </td>
+    <td class="total_display"><span id="discount_total"><%= number_to_currency @order.item_total() - @order.calculate_discount() -%></span></td>
+  </tr>
+	<% end %>
+
+  <tr>
+    <td colspan="3"><b><%= t('tax') %>:</b></td>
+    <td class="total_display"><span id="tax_amount"><%= number_to_currency @order.tax_amount -%></span></td>
+  </tr>
+  <tr>
+    <td colspan="3"><b><%= t('shipping') %>:</b> 
+      <% if @order.shipment && @order.shipment.shipping_method %>
+        <span id="ship_method">(<%= @order.shipment.shipping_method.name %>)</span>
+      <% end %>
+    </td>
+    <td class="total_display"><span id="ship_amount"><%= number_to_currency @order.ship_amount -%></span></td>
+  </tr>
+  <tr>
+    <td colspan="3"><b><%= t('order_total') %>:</b></td>
+    <td class="total_display"><span id="order_total"><%= number_to_currency @order.total() -%></span></td>
+  </tr>
+</table>

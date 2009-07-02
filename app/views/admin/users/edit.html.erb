@@ -1,0 +1,31 @@
+<div id="user_attr">
+  <%= error_messages_for :user %>
+  <h1><%= t("editing_user") %></h1>
+
+  <% form_for(:user, :url => object_url, :html => { :method => :put }) do |f| %>
+    <%= render :partial => "form", :locals => { :f => f } %>
+    <p class="form-buttons">
+      <%= button t("update") %> <%= link_to t('cancel'), collection_url %>
+    </p>
+  <% end %>
+</div>
+
+<div id="user_affiliate_attr">
+  <h2>Discount Codes</h2>
+	<ul>
+	<% @user.discount_codes.each do |dc| %>
+		<li>
+			<%= dc.comments + "( " + dc.code + " )"%>
+			<%= link_to 'delete', url_for([:admin,dc]) , :method => 'delete'%>
+		</li>
+	<% end %>
+	</ul>
+
+  <% form_for @discount_code, :url => admin_discount_codes_path do |f| %>
+    <%= hidden_field_tag :user_id, @user.id %>
+    <%= render :partial => "admin/discount_codes/form", :locals => { :form => f } %>
+    <p class="form-buttons">
+      <%= f.submit "add code" %> 
+    </p>
+  <% end %>
+</div>

@@ -1,0 +1,32 @@
+<% @body_id = 'cart' %>
+
+<h1><%= t("shopping_cart")%></h1>
+
+<% form_for(:order, :url => object_url, :html => { :method => :put, :id => 'updatecart' }) do |f| %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
+
+	<% unless @order.line_items.empty? -%>
+  <div id="subtotal">
+		<% if @order.discount_code %>
+    <h3><%= "Discount: #{ number_to_currency @order.calculate_discount }"%></h3>
+    <h3><%= "Subtotal: #{ discount_price( @order )}"%></h3>
+    <% else %>
+    <h3><%= "#{t("subtotal")}: #{order_price(@order)}" %></h3>
+		<p>
+			<%= label_tag :code, "Discount Code" %>
+			<%= text_field_tag :code %>
+		</p>
+		<% end %>
+    <div class="links">
+      <%= link_to image_tag('/images/update.png') + t("update"), '#', :class => 'button checkout primary', :onclick => "$('form#updatecart').submit(); return false;" %>
+      <%= link_to image_tag('/images/checkout.png') + t("checkout"), checkout_order_url(@order), :class => 'button checkout primary' %>
+    </div>
+  </div>
+  <% end -%>
+  <p><%=link_to t("continue_shopping"), products_path, :class => 'button continue' %></p>
+  <% unless @order.line_items.empty? -%>
+  <p id="clear_cart_link">
+    <%= link_to t("empty_cart"), object_url, :method => :delete, :class => 'button empty'  %>
+  </p>
+  <% end -%>
+<% end -%>
