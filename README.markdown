@@ -1,4 +1,5 @@
 # Affiliate System #
+works with 0.8.3 only
 
 ## extensions
 This extension creates a DiscountCode resource. 
@@ -16,4 +17,9 @@ The methods added:
 
 ## theory
 
-A user can become an affiliate by adding a discount_code
+A user can become an affiliate by adding a discount_code. 
+  @user.is_affilliate? 
+
+Not all products are created equal. When the discount_total is calculated, the method only considers 
+products that have a taxon with a name == "Discountable"
+
